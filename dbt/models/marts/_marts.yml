@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: dim_users
+    description: >
+      One row per user with the certified user-level metrics. All analyses
+      read metric definitions from here.
+    columns:
+      - name: user_id
+        tests: [unique, not_null]
+      - name: is_activated_7d
+        description: First voice generated within 7 days of sign-up. Primary product health metric.
+        tests: [not_null]
+      - name: characters_28d
+        description: Characters generated in the first 28 days after sign-up.
+        tests: [not_null]
+      - name: is_paid_28d
+        description: Subscription started within 28 days of sign-up. Guardrail metric.
+        tests: [not_null]
+      - name: is_active_week_4
+        description: Active (session or voice) in days 28-34 after sign-up. Null if that week is not fully observed.
+
+  - name: fct_experiment_users
+    description: One row per user in the onboarding_v2 experiment, with every metric needed for the readout.
+    columns:
+      - name: user_id
+        tests: [unique, not_null]
+      - name: variant
+        tests:
+          - not_null
+          - accepted_values:
+              values: [control, treatment]
+
+  - name: fct_retention_cohorts
+    description: Weekly retention by sign-up cohort, only for fully observed weeks.
+    columns:
+      - name: retention_rate
+        tests: [not_null]
+
+  - name: fct_daily_kpis
+    description: Daily KPIs by sign-up date.
+    columns:
+      - name: signup_date
+        tests: [unique, not_null]
