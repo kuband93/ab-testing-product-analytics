@@ -1,0 +1,19 @@
+name: voxly
+version: "1.0.0"
+profile: voxly
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+vars:
+  raw_path: "../data/raw"      # where data_gen/generate.py writes the CSVs
+  data_end: "2026-11-24"       # last day of observed data (exclusive)
+
+models:
+  voxly:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table

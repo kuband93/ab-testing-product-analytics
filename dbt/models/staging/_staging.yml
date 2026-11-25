@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: stg_users
+    description: One row per user, with sign-up details and the pre-sign-up visit count.
+    columns:
+      - name: user_id
+        tests: [unique, not_null]
+      - name: signup_ts
+        tests: [not_null]
+      - name: channel
+        tests:
+          - accepted_values:
+              values: [organic, paid_social, referral, partner]
+      - name: device
+        tests:
+          - accepted_values:
+              values: [desktop, mobile]
+
+  - name: stg_events
+    description: One row per product event.
+    columns:
+      - name: event_id
+        tests: [unique, not_null]
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_users')
+              field: user_id
+      - name: event_name
+        tests:
+          - accepted_values:
+              values: [signup, session_start, project_created, voice_generated, subscription_started]
+
+  - name: stg_assignments
+    description: One row per user in an experiment.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_users')
+              field: user_id
+      - name: variant
+        tests:
+          - accepted_values:
+              values: [control, treatment]

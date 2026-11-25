@@ -1,0 +1,7 @@
+voxly:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: voxly.duckdb
+      threads: 4
